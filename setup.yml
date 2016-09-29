@@ -1,0 +1,51 @@
+# (c) 2016, Radware LTD.
+
+# This file is part of Ansible
+#
+# Ansible is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Ansible is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
+
+# ============================================================
+---
+- name: Copy modules to ansible installation
+  hosts: localhost
+  connection: local
+
+  vars:
+    copy_modules: true
+
+  tasks:
+    - name: check ansible version
+      fail: msg="vDirect integration supported for ansible versions >= stable 2.1"
+      when: ansible_version.full < "2.1.1.0"
+
+    - name: locate ansible module_utils dir
+      command: python -c "import ansible.module_utils.basic; import os; print(os.path.dirname(ansible.module_utils.basic.__file__))"
+      register: result
+
+    - name: save ansible module_utils dir
+      set_fact: ansible_module_utils="{{result.stdout}}"
+
+    - name: copy vdirect_api to module_utils dir "{{ansible_module_utils}}"
+      copy:
+        src: "{{playbook_dir}}/module_utils/vdirect_api.py"
+        dest: "{{ansible_module_utils}}"
+
+    - name: get general ansible dir
+      set_fact: ansible_dir={{ansible_module_utils[:-12]}}
+
+    - name: copy modules to ansible modules "{{ansible_dir}}"
+      copy:
+        src: "{{playbook_dir}}/library/"
+        dest: "{{ansible_dir}}/modules/extras/network/radware/"
+      when: copy_modules

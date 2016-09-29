@@ -1,0 +1,114 @@
+# (c) 2016, Radware LTD.
+
+# This file is part of Ansible
+#
+# Ansible is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Ansible is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
+
+# ============================================================
+--- 
+- name: simple sanity test checking vDirect module installation.
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    ip: "{{vdirect_ip}}"
+    username: "{{vdirect_username}}"
+    password: "{{vdirect_password}}"
+    file_dir: files
+    template_name: template_example.vm
+    workflow_template_name: workflow_example
+    workflow_archive: workflow_example.zip
+    workflow_file_name: workflow.xml
+    workflow_name: workflow_test
+    validate_certs: no
+    alteon_device_name: "{{alteon}}"
+    
+  tasks:
+    # upload the configuration template in template_example.vm to vDirect and name it template_example.vm
+    # WARNING: this will overwrite an existing template with the same name.
+    - name: upload configuration template to vDirect
+      vdirect_file:
+        vdirect_ip: "{{ip}}"
+        username: "{{username}}"
+        password: "{{password}}"
+        validate_certs: "{{validate_certs}}"
+        template_name: "{{template_name}}"
+        template_file: "{{file_dir}}/{{template_name}}"
+        overwrite: yes
+
+    # execute the template_example.vm configuration template 
+    - name: execute configuration template
+      vdirect_template:
+        vdirect_ip: "{{ip}}"
+        username: "{{username}}"
+        password: "{{password}}"
+        validate_certs: "{{validate_certs}}"
+        device_name: "{{alteon_device_name}}"
+        template_name: "{{template_name}}"
+        x: 2
+        y: 5
+     
+    # uploading a workflow requires uploading a zip archive.
+    # step one - delete existing archive and create fresh archive
+    - name: delete old zip file if exists
+      file: path={{file_dir}}/{{workflow_archive}} state=absent
+
+    - name: create zip file for workflow
+      command: zip -j {{file_dir}}/{{workflow_archive}} {{file_dir}}/{{workflow_file_name}}
+
+    # step two: upload the archive to vDirect
+    # WARNING: this will replace any existing workflow template with the same name on the device
+    - name: upload workflow archive to vDirect
+      vdirect_file:
+        vdirect_ip: "{{ip}}"
+        username: "{{username}}"
+        password: "{{password}}"
+        validate_certs: "{{validate_certs}}"
+        workflow_archive: "{{file_dir}}/{{workflow_archive}}"
+        overwrite: yes
+
+    # execute create workflow
+    - name: execute create workflow
+      vdirect_workflow:
+        vdirect_ip: "{{ip}}"
+        username: "{{username}}"
+        password: "{{password}}"
+        validate_certs: "{{validate_certs}}"
+        operation: create
+        workflow_template_name: "{{workflow_template_name}}"
+        workflow_name: "{{workflow_name}}"
+        x: 2
+        y: 4
+
+    # execute a workflow action
+    - name: execute workflow action
+      vdirect_workflow:
+        vdirect_ip: "{{ip}}"
+        username: "{{username}}"
+        password: "{{password}}"
+        validate_certs: "{{validate_certs}}"
+        operation: action
+        action: incrementZ
+        workflow_name: "{{workflow_name}}"
+
+    - name: delete workflow
+      vdirect_workflow:
+        vdirect_ip: "{{ip}}"
+        username: "{{username}}"
+        password: "{{password}}"
+        validate_certs: "{{validate_certs}}"
+        operation: delete
+        workflow_name: "{{workflow_name}}"
+

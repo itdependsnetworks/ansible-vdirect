@@ -1,0 +1,16 @@
+## template for testing
+## accepts x and y as input integer parameters
+## and outputs their sum as parameter z
+
+## making sure that we don't accidentally lock the Alteon device.
+#devicelock(false)
+
+#param($x, 'type=int', 'direction=in', 'prompt=X (between 1 and 10)', 'min=1', 'max=10')
+#param($y, 'type=int', 'direction=in', 'prompt=Y (between 1 and 10)', 'min=1', 'max=10')
+
+#param($z, 'type=int', 'direction=out')
+
+#set($z = $x+$y)
+
+#log('info', 'z = $z')
+

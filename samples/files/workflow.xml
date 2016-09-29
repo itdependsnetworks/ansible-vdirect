@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<workflow
+  xmlns="http://www.radware.com/vdirect"
+  name="workflow_example" createAction="init_workflow" deleteAction="delete_workflow">
+ <persist>
+   <parameters>
+   <!-- user inputs -->
+     <parameter name="x" type="int" prompt="integer"/>
+     <parameter name="y" type="int" prompt="integer"/>
+     
+     <!-- calculated -->
+     <parameter name="z" type="int"/>
+     
+   </parameters>
+ </persist> 
+  
+ <actions>
+   
+   <action name="init_workflow" visible="false">
+     <inputs>
+       <parameters>
+         <parameter name="x"/>
+         <parameter name="y"/>
+       </parameters>
+     </inputs>
+     <sequence>
+       <set value="$x + $y" saveAs="$z"/>
+       <log level="info" message="z = $z"/>
+     </sequence>
+     <onError>
+       <autoRevert/>
+     </onError>
+   </action>  
+   
+   <action name="incrementZ" >
+     <inputs>
+     </inputs>
+     <sequence>
+       <set value="$z + 1" saveAs="$z"/>
+       <log level="info" message="z incremented to $z"/>
+     </sequence>
+     <onError>
+       <autoRevert/>
+     </onError>
+   </action>  
+   
+   <action name="delete_workflow" visible="false">
+     <sequence>
+       <log level="info" message="on deletion, z was equal to $z"/>
+     </sequence>
+     <onError>
+       <autoRevert/>
+     </onError>
+   </action>  
+ </actions>
+</workflow>
