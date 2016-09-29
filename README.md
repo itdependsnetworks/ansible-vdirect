@@ -41,7 +41,7 @@ This allows writing playbooks that execute several configuration templates and i
 3. Radware Alteon 30.2.3
 
 ##Support:
-These Ansible modules for vDirect are supported by Radware only if used with Radware’s vDirect product and only if the customer is under an active and fully paid support service contract. This means that only Radware customers who have purchased and fully paid for Radware’s support services are eligible for support to these Ansible modules.
+These Ansible modules for vDirect are supported by Radware only if used with Radwareâ€™s vDirect product and only if the customer is under an active and fully paid support service contract. This means that only Radware customers who have purchased and fully paid for Radwareâ€™s support services are eligible for support to these Ansible modules.
 
 ##Installation
 setup.yml is a playbook that copies the shared code to ansible/module_utils and the modules to ansible/modules/extras/network/radware.
@@ -49,6 +49,7 @@ setup.yml is a playbook that copies the shared code to ansible/module_utils and 
 1. Clone this repo to your ansible control machine.
 2. Change into the cloned directory.
 3. Run ansible-playbook -v setup.yml.
+
 **Note**: The playbook copies files to ansible folders on the machine. Run the playbook with a user account that has write permissions to these locations.
 
 ##Testing
