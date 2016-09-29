@@ -19,6 +19,7 @@ Upload configuration templates or workflow archives to vDirect. Supports project
 ###vDirect_template:
 Execute vDirect configuration templates. This dynamic module allows executing any configuration template found on vDirect. 
 Flow:
+
 1. Connect to vDirect.
 2. Validate that the template exists and is in a valid state.
 3. Pull template configuration (parameters and devices).
@@ -48,7 +49,9 @@ setup.yml is a playbook that copies the shared code to ansible/module_utils and 
 
 1. Clone this repo to your ansible control machine.
 2. Change into the cloned directory.
-3. Run ansible-playbook -v setup.yml.
+3. Run 
+ 
+ ```ansible-playbook -v setup.yml.```
 
 **Note**: The playbook copies files to ansible folders on the machine. Run the playbook with a user account that has write permissions to these locations.
 
@@ -59,7 +62,8 @@ The configuration template and the workflow do not make changes to your Alteon c
 You need to supply the playbook with the vDirect IP address, login credentials, and an Alteon device name (as registered in vDirect).
 
 To run the playbook:
-ansible-playbook -v simple_tests.yml -e "vdirect_username=USERNAME vdirect_password=PASSWORD vdirect_ip=IP alteon=ALTEON"
+
+```ansible-playbook -v simple_tests.yml -e "vdirect_username=USERNAME vdirect_password=PASSWORD vdirect_ip=IP alteon=ALTEON"```
 
 Add the verbosity flag (-v) to see verbose output of template and workflow execution.
 
