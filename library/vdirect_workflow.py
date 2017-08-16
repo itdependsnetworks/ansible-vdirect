@@ -146,7 +146,7 @@ def _augment_arg_spec(arg_spec):
     return arg_spec
 
 
-def _create_ansible_module(arg_spec, check_invalid_args=True):
+def _create_ansible_module(arg_spec, check_invalid_args=False):
     """
     create AnsibleModule instance
     :param arg_spec:
